@@ -1,16 +1,20 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <sstream>
 #include "LibraFile.h"
 
-LibFile::LibFile() : filename("books.txt")
+LibFile::LibFile() : filename("Library.csv")
 {
-    filestrm.open(filename, std::ios::in); // Open file with filename books.txt
+    filestrm.open(filename, std::ios::in); // Open file with filename Library.csv
 
     if (!filestrm) // If file does not exist
     {
         filestrm.open(filename, std::ios::out); // Create file with filename books.txt
-        std::cout << "File created: " << filename << std::endl; // Inform User
+        filestrm << "Title,Author,Genre,Borrowed\n"; // Write header to file
+        std::cout << "File created and header added: " << filename << std::endl; 
+        created = true; 
     }
 }
 
@@ -21,6 +25,91 @@ LibFile::LibFile(const std::string& filePath) : filename(filePath)
     if (!filestrm) // If file does not exist
     {
         filestrm.open(filename, std::ios::out); // Create file with filename
-        std::cout << "File created: " << filename << std::endl; // Inform User
+        filestrm << "Title,Author,Genre,Borrowed\n"; // Write header to file
+        std::cout << "File created and header added: " << filename << std::endl; 
+        created = true; 
+    }
+}
+
+void LibFile::addBook(const Book& book)
+{
+    
+}
+
+int LibFile::csvload(const Book& book) // Adds a book to the collection
+{
+    std::string initial;
+    std::string final;
+    int titleIndex = -1; 
+    int authorIndex = -1; 
+    int genreIndex = -1; 
+    std::string column;; // Variable to store each column name
+    std::vector<std::string> headers; // Vector to store header names
+
+    if (created)
+    {
+        filestrm.close(); // Close the file stream if it was just created
+        filestrm.open(filename, std::ios::in); // Reopen the file in read mode
+    }
+
+    std::getline(filestrm, initial); // Read the header line
+    std::stringstream header_ss(initial); // Create a stringstream from the header line
+
+    while (std::getline(header_ss, column, ',')) // Read each column name from the header line
+    {
+        headers.push_back(column); // Add column name to vector
+    }
+
+    for(int i =0; i < headers.size(); i++)
+    {
+        if (headers[i] == "Title") 
+            titleIndex = i; 
+        else if (headers[i] == "Author") 
+            authorIndex = i; 
+        else if (headers[i] == "Genre") 
+            genreIndex = i; 
+    }
+
+    if (titleIndex == -1 || authorIndex == -1 || genreIndex == -1) // If any of the indices are not found
+    {
+        std::cerr << "Error: Header not found in file." << std::endl; // Print error message
+        filestrm.close(); // Close the file stream
+        return -1; // Exit the function
+    } // Error Handling in case of missing header, or csv doesn't have data needed
+
+    while(std::getline(filestrm, final))
+    {
+        std::stringstream ss(final);
+        std::string temp;
+
+        Book tempBook; // Create a temporary Book object
+
+        for(int k = 0; std::getline(ss, temp, ','); k++)
+        {
+            if (k == titleIndex) 
+                tempBook.title = temp; 
+            else if (k == authorIndex) 
+                tempBook.author = temp; 
+            else if (k == genreIndex) 
+                tempBook.genre = temp; 
+        }
+
+        if(tempBook.title.empty() || tempBook.author.empty() || tempBook.genre.empty()) // If any of the fields are empty
+        {
+            std::cerr << "Error: Missing data in file." << std::endl; 
+            continue; // Skip this iteration
+        }
+
+        addBook(tempBook); // Add the book to the collection
+    }
+    
+}
+
+
+LibFile::~LibFile() // Destructor: closes the file stream
+{
+    if (filestrm.is_open()) // If file is open
+    {
+        filestrm.close(); // Close the file stream
     }
 }

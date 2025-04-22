@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <sstream>
 #include "LibraFile.h"
 
@@ -31,12 +32,17 @@ LibFile::LibFile(const std::string& filePath) : filename(filePath)
     }
 }
 
-void LibFile::addBook(const Book& book)
+void LibFile::addBook(const Book& book) // Adds book into the collection vector
 {
-    
+    LibraPlus.push_back(book); // Add book to the collection vector
+    Book* ptr = &LibraPlus.back(); // Get pointer to the last book added
+    ptr->borrowed = false; // Set borrowed status to false
+    titleIndex[book.title].push_back(ptr); // Index book by title
+    authorIndex[book.author].push_back(ptr); // Index book by author
+    genreIndex[book.genre].push_back(ptr); // Index book by genre
 }
 
-int LibFile::csvload(const Book& book) // Adds a book to the collection
+int LibFile::csvload(const Book& book) // Extracts needed info from csv file
 {
     std::string initial;
     std::string final;
@@ -104,7 +110,6 @@ int LibFile::csvload(const Book& book) // Adds a book to the collection
     }
     
 }
-
 
 LibFile::~LibFile() // Destructor: closes the file stream
 {

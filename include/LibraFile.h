@@ -18,6 +18,10 @@ private: // Methods or variables that can be accessed within the class
         std::string genre; // Genre of the book
         bool borrowed; // Borrowed status of the book
     };
+    std::vector<Book> LibraPlus; // Vector to store books
+    std::unordered_map<std::string, std::vector<Book*>> titleIndex; // Map to index books by title
+    std::unordered_map<std::string, std::vector<Book*>> authorIndex; // Map to index books by author
+    std::unordered_map<std::string, std::vector<Book*>> genreIndex; // Map to index books by genre
 
 public: // Methods or variables that can be accessed outside the class
 

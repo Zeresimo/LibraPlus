@@ -33,6 +33,8 @@ public: // Methods or variables that can be accessed outside the class
 
     int csvload(const Book& book); // Loads the csv file and filters needed data
     void addBook(const Book& book); // Adds a book to the collection
+    void createbook(); // Creates a new book as defined by user
+    void LibFile::savetoCSV(); // Saves all data to CSV file
 
 };
 #endif // LIBRAFILE_H

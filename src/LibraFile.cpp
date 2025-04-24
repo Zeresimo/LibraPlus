@@ -111,6 +111,59 @@ int LibFile::csvload(const Book& book) // Extracts needed info from csv file
     
 }
 
+void LibFile::createbook() // Creates a new book as defined by user
+{
+    Book newBook; // Create a new Book object
+
+    std::cout << "Enter the title of the book: ";
+    std::getline(std::cin, newBook.title); // Get title from user
+
+    std::cout << "Enter the author of the book: ";
+    std::getline(std::cin, newBook.author); // Get author from user
+
+    std::cout << "Enter the genre of the book: ";
+    std::getline(std::cin, newBook.genre); // Get genre from user
+
+    addBook(newBook); // Add the book to the collection
+}
+
+void LibFile::savetoCSV() // Saves the current collection to the CSV file
+{
+    char choice;
+
+    std::cout << "Do you want to save the file? (y/n): ";
+    std::cin >> choice; 
+    if (choice == 'y' || choice == 'Y' ) // If user chooses save
+    {
+        char choice2; // Choice for overwrite
+        if (!created)
+        {
+            std::cout << "File already exists. Do you want to overwrite it? (y/n): ";
+            std::cin >> choice2; 
+        }
+        if (choice2 == 'y' || choice2 == 'Y' || created) 
+        {
+            std::ofstream NewFile(filename, std::ios::out); // Open file in overwrite mode
+            NewFile << "Title,Author,Genre,Borrowed\n"; // Write header to file
+            for (const Book& book : LibraPlus) // Iterate through the collection vector
+            {
+                NewFile << book.title << "," << book.author << "," << book.genre << "," << book.borrowed << "\n"; // Write book data to file
+            }
+            NewFile.close(); // Close the file stream
+        }
+        else // If user chooses not to overwrite
+        {
+            std::cout << "File not saved." << std::endl; 
+            return; 
+        }
+    }
+    else // If user chooses not to save
+    {
+        std::cout << "File not saved." << std::endl; 
+        return; 
+    }
+}
+
 LibFile::~LibFile() // Destructor: closes the file stream
 {
     if (filestrm.is_open()) // If file is open

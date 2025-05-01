@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <sstream>
 #include "LibraFile.h"
+#include "LibraBook.h"
 
 LibFile::LibFile() : filename("Library.csv")
 {
@@ -12,9 +13,8 @@ LibFile::LibFile() : filename("Library.csv")
 
     if (!filestrm) // If file does not exist
     {
-        filestrm.open(filename, std::ios::out); // Create file with filename books.txt
-        filestrm << "Title,Author,Genre,Borrowed\n"; // Write header to file
-        std::cout << "File created and header added: " << filename << std::endl; 
+        filestrm.open(filename, std::ios::out); // Create file "Library.csv"
+        std::cout << "File created: " << filename << std::endl; 
         created = true; 
     }
 }
@@ -26,30 +26,19 @@ LibFile::LibFile(const std::string& filePath) : filename(filePath)
     if (!filestrm) // If file does not exist
     {
         filestrm.open(filename, std::ios::out); // Create file with filename
-        filestrm << "Title,Author,Genre,Borrowed\n"; // Write header to file
-        std::cout << "File created and header added: " << filename << std::endl; 
+        std::cout << "File created: " << filename << std::endl; 
         created = true; 
     }
 }
 
-void LibFile::addBook(const Book& book) // Adds book into the collection vector
-{
-    LibraPlus.push_back(book); // Add book to the collection vector
-    Book* ptr = &LibraPlus.back(); // Get pointer to the last book added
-    ptr->borrowed = false; // Set borrowed status to false
-    titleIndex[book.title].push_back(ptr); // Index book by title
-    authorIndex[book.author].push_back(ptr); // Index book by author
-    genreIndex[book.genre].push_back(ptr); // Index book by genre
-}
-
-int LibFile::csvload(const Book& book) // Extracts needed info from csv file
+int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv file
 {
     std::string initial;
     std::string final;
     int titleIndex = -1; 
     int authorIndex = -1; 
     int genreIndex = -1; 
-    std::string column;; // Variable to store each column name
+    std::string column; // Variable to store each column name
     std::vector<std::string> headers; // Vector to store header names
 
     if (created)
@@ -88,7 +77,7 @@ int LibFile::csvload(const Book& book) // Extracts needed info from csv file
         std::stringstream ss(final);
         std::string temp;
 
-        Book tempBook; // Create a temporary Book object
+        LibBook::Book tempBook; // Create a temporary Book object
 
         for(int k = 0; std::getline(ss, temp, ','); k++)
         {
@@ -106,31 +95,16 @@ int LibFile::csvload(const Book& book) // Extracts needed info from csv file
             continue; // Skip this iteration
         }
 
-        addBook(tempBook); // Add the book to the collection
+        libBookInstance.addBook(tempBook); // Add the book to the collection
     }
+
+    return 0;
     
 }
 
-void LibFile::createbook() // Creates a new book as defined by user
-{
-    Book newBook; // Create a new Book object
-
-    std::cout << "Enter the title of the book: ";
-    std::getline(std::cin, newBook.title); // Get title from user
-
-    std::cout << "Enter the author of the book: ";
-    std::getline(std::cin, newBook.author); // Get author from user
-
-    std::cout << "Enter the genre of the book: ";
-    std::getline(std::cin, newBook.genre); // Get genre from user
-
-    addBook(newBook); // Add the book to the collection
-}
-
-void LibFile::savetoCSV() // Saves the current collection to the CSV file
+void LibFile::savetoCSV(LibBook& libBookInstance) // Saves the current collection to the CSV file
 {
     char choice;
-
     std::cout << "Do you want to save the file? (y/n): ";
     std::cin >> choice; 
     if (choice == 'y' || choice == 'Y' ) // If user chooses save
@@ -145,7 +119,7 @@ void LibFile::savetoCSV() // Saves the current collection to the CSV file
         {
             std::ofstream NewFile(filename, std::ios::out); // Open file in overwrite mode
             NewFile << "Title,Author,Genre,Borrowed\n"; // Write header to file
-            for (const Book& book : LibraPlus) // Iterate through the collection vector
+            for (const LibBook::Book& book : libBookInstance.getBooks()) // Iterate through the collection vector
             {
                 NewFile << book.title << "," << book.author << "," << book.genre << "," << book.borrowed << "\n"; // Write book data to file
             }

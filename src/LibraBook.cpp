@@ -1,29 +1,81 @@
 #include <iostream>
 #include "LibraBook.h"
+#include <unordered_map>
+#include <string>
+#include <vector>
 
-
-LibBook::LibBook(const std::string &title, const std::string &author, int year)
+void LibBook::ByGenre(const std::string& genre) const
 {
+    auto it = genreIndex.find(genre); // Find the genre in the index
+
+    if (it != genreIndex.end()) // If the genre exists in the index
+    {
+        std::cout << "Books in genre " << genre << ":" << std::endl;
+        for (const Book* book : it->second) // Iterate through the books in that genre
+        {
+            std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Borrowed: " << (book->borrowed ? "Yes" : "No") << "\n -------- " << std::endl; 
+        }
+    }
+
+    else // If the genre does not exist in the index
+    {
+        std::cout << "No books found in genre " << genre << "." <<  std::endl; 
+    }
 }
 
-std::string LibBook::getTitle() const
+void LibBook::ByTitle(const std::string& title) const
 {
+    auto it = titleIndex.find(title); // Find matching books by title
 
+    if (it != titleIndex.end()) // If the title exists in the index
+    {
+        for (const Book* book: it->second) // Loop through the matching books
+        {
+            std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed: " << (book->borrowed ? "Yes" : "No") << "\n -------- " << std::endl; 
+        }
+    }
+
+    else // If the title does not exist in the index
+    {
+        std::cout << "No books found with title " << title << "." << std::endl; 
+    }
+    return;
 }
 
-std::string LibBook::getAuthor() const
+void LibBook::ByAuthor(const std::string& author) const
 {
+    auto it = authorIndex.find(author); // Find matching books by author
 
+    if (it != authorIndex.end()) // If the author exists in the index
+    {
+        for (const Book* book: it->second) // Loop through the matching books
+        {
+            std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << "\n Borrowed: " << (book->borrowed ? "Yes" : "No") << "\n -------- " << std::endl; 
+        }
+    }
+
+    else // If the author does not exist in the index
+    {
+        std::cout << "No books found by author " << author << "." << std::endl; 
+    }
+    return;
 }
 
-std::string LibBook::getGenre() const
+void LibBook::displayCollection() const
 {
+    if (LibraPlus.empty()) // If the collection is empty
+    {
+        std::cout << "No books in the collection." << std::endl; 
+        return; 
+    }
 
-}
-
-void LibBook::displayBookInfo() const
-{
-
+    std::cout << "Books in the collection:" << std::endl;
+    for(const Book& book : LibraPlus) // Iterate through the collection vector
+    {
+        std::cout << "Title: " <<  book.title << "\n" <<", Author: " << book.author << 
+        "\n" << ", Genre: " << book.genre << "\n" << ", Borrowed: " << (book.borrowed ? "Yes" : "No") << std::endl; 
+    }
+    return;
 }
 
 std::vector<LibBook::Book>& LibBook::getBooks()

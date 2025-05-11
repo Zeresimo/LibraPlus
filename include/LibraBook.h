@@ -15,23 +15,21 @@ public: // Methods or variables that can be accessed from outside the class
         std::string genre; // Genre of the book
         bool borrowed; // Borrowed status of the book
     };
-    // Constructor: initializes a book with a title, author, and year
-    LibBook(const std::string& title, const std::string& author, int year);
-
-    // Getter for the title of the book
-    std::string LibBook::getTitle() const;
-
-    // Getter for the author of the book
-    std::string LibBook::getAuthor() const;
-
-    // Getter for the genre of the book
-    std::string LibBook::getGenre() const;
 
     //  Displays the book's information
-    void displayBookInfo() const;
+    void displayCollection() const;
 
     // Returns the collection of books
     std::vector<Book>& getBooks();
+
+    // Displays books based on genre
+    void ByGenre(const std::string& genre) const;
+
+    // Displays books based on title
+    void ByTitle(const std::string& title) const;
+
+    // Displays books based on author
+    void ByAuthor(const std::string& author) const;
 
     // Creates a new book as defined by user
     void createbook(); 

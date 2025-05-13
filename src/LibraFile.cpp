@@ -67,7 +67,7 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
 
     if (titleIndex == -1 || authorIndex == -1 || genreIndex == -1) // If any of the indices are not found
     {
-        std::cerr << "Error: Header not found in file." << std::endl; // Print error message
+        std::cout << "Error: Header not found in file." << std::endl; // Print error message
         filestrm.close(); // Close the file stream
         return -1; // Exit the function
     } // Error Handling in case of missing header, or csv doesn't have data needed
@@ -91,7 +91,7 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
 
         if(tempBook.title.empty() || tempBook.author.empty() || tempBook.genre.empty()) // If any of the fields are empty
         {
-            std::cerr << "Error: Missing data in file." << std::endl; 
+            std::cout << "Error: Missing data in file." << std::endl; 
             continue; // Skip this iteration
         }
 

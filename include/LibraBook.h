@@ -14,6 +14,7 @@ public: // Methods or variables that can be accessed from outside the class
         std::string author; // Author of the book
         std::string genre; // Genre of the book
         bool borrowed; // Borrowed status of the book
+        std::string borrowedby; // User who borrowed the book
     };
 
     //  Displays the book's information
@@ -36,6 +37,9 @@ public: // Methods or variables that can be accessed from outside the class
 
     // Adds a book to the collection
     void addBook(const Book& book); 
+
+    bool BorrowBook(const std::string& title, const std::string& username); // Borrow a book
+    bool ReturnBook(const std::string& title, const std::string& username); // Return a book
 
 private: // Methods or variables that can only be accessed from within the class
     std::string title;

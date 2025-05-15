@@ -28,7 +28,6 @@ void Student::displayInfo() const // Override displayInfo function
         std::cout << "Privileges: Limited access to the library system." << std::endl; // Display privileges
     }
 
-
 void UserManagement::addUser()
 {
     std::string username, password, confirmPassword;
@@ -87,6 +86,33 @@ void UserManagement::addUser()
     {
         LoginInfo.push_back(new Student(username, password)); // Add new student to the vector
     }
+}
+
+User* UserManagement::loginUser()
+{
+    std::string username, password;
+    std::cout << "Welcome to the Library System!" << std::endl;
+    std::cout << "Please log in to continue." << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+    
+    for(int i = 0; i < 3; i++)
+    {
+        std::cout << "Enter username: ";
+        std::cin >> username; // Get username from input
+        std::cout << "Enter password: ";
+        std::cin >> password; // Get password from input
+
+        for (auto user : LoginInfo) // Iterate through the vector of users
+        {
+            if (user->getUsername() == username && user->checkPassword(password)) // Check if username and password match
+            {
+                return user; // Return the user object if credentials are correct
+            }
+        }
+        std::cout << "Invalid username or password. Please try again." << std::endl; // Prompt for re-entry
+    }
+    std::cout << "Too many failed attempts. Exiting." << std::endl; // Exit if too many attempts
+    return nullptr; // Return nullptr if no matching user is found
 }
 
 UserManagement::~UserManagement()

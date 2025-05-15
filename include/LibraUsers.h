@@ -10,12 +10,16 @@ protected:
     std::string username;
     std::string password;
 public:
-    User(const std::string& user, const std::string& pass) // Constructor to initialize username and password
+    // Constructor to initialize username and password
+    User(const std::string& user, const std::string& pass) 
     : username(user), password(pass) {}
-    virtual ~User() {} // Virtual destructor for proper cleanup of derived classes
-
-    virtual void Displaymenu() const = 0; // Pure virtual function to display user menu
-    virtual void displayInfo() const = 0; // Pure virtual function to display user information
+    // Virtual destructor for proper cleanup of derived classes
+    virtual ~User() {}
+    // Pure virtual function to display user menu 
+    virtual void Displaymenu() const = 0;
+    // Pure virtual function to display user information 
+    virtual void displayInfo() const = 0; 
+    
     std::string getUsername() const { return username; } 
     std::string getPassword() const { return password; } 
 
@@ -54,6 +58,7 @@ private:
     std::vector<User*> LoginInfo; // Vector to store users
 public:
     void addUser(); // Function to add a new user
+    User* loginUser(); // Function to log in a user
     ~UserManagement(); // Destructor to clean up user pointers
 };
 

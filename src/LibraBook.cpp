@@ -108,3 +108,25 @@ void LibBook::addBook(const Book& book) // Adds book into the collection vector
     authorIndex[book.author].push_back(ptr); // Index book by author
     genreIndex[book.genre].push_back(ptr); // Index book by genre
 }
+
+bool LibBook::BorrowBook(const std::string& title, const std::string& username)
+{
+    auto it = titleIndex.find(title); // Find the book by title
+
+    if (it != titleIndex.end()) // If the book exists
+    {
+        for (Book* book : it->second) // Loop through the matching books
+        {
+            if (!book->borrowed) // If the book is not borrowed
+            {
+                book->borrowed = true; // Mark the book as borrowed
+                book->borrowedby = username; // Set the user who borrowed the book
+                std::cout << "Book borrowed successfully." << std::endl; 
+                return true; // Return success
+            }
+        }
+    }
+
+    std::cout << "Book is already borrowed." << std::endl; 
+    return false; // Return failure
+}

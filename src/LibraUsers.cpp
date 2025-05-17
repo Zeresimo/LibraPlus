@@ -270,13 +270,13 @@ void UserManagement::handleRoleMenu(User* user, LibBook& bookManager)
 
     if (user->canAddBook()) // If user is librarian
     {
-        std::cout << "Welcome, Librarian!" << std::endl; // Welcome message
+        std::cout << "\nWelcome, Librarian!" << std::endl; // Welcome message
         static_cast<Librarian*>(user)->handleLibrarianMenu(user, bookManager); // Assumes librarian role to continue
     }
 
     else // If user is student
     {
-        std::cout << "Welcome, Student!" << std::endl; // Welcome message
+        std::cout << "\nWelcome, Student!" << std::endl; // Welcome message
         static_cast<Student*>(user)->handleStudentMenu(user, bookManager); // Assumes student role to continue
     }
 

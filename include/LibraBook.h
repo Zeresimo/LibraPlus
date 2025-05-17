@@ -13,8 +13,8 @@ public: // Methods or variables that can be accessed from outside the class
         std::string title; // Title of the book
         std::string author; // Author of the book
         std::string genre; // Genre of the book
-        bool borrowed; // Borrowed status of the book
-        std::string borrowedby; // User who borrowed the book
+        bool borrowed = false; // Borrowed status of the book
+        std::string borrowedby =""; // User who borrowed the book
     };
 
     //  Displays the book's information

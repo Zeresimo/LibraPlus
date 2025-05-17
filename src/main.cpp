@@ -14,8 +14,8 @@ int main()
 
     // Prompt for filename and action with temporary LibFile instance
     LibFile temp;
-    std::pair<std::string, int> fileData = temp.PromptFileOption();
-    std::string filename = fileData.first;
+    pair<string, int> fileData = temp.PromptFileOption();
+    string filename = fileData.first;
     int choice = fileData.second;
 
     // Create a new fileManager with filename
@@ -27,19 +27,19 @@ int main()
 
         if (FileManager.loadFromCSV(bookManager) == 0) 
         {
-            std::cout << "File successfully loaded!" << std::endl;
+            cout << "File successfully loaded!" << endl;
         } 
 
         else 
         {
-            std::cout << "Failed to load file." << std::endl;
+            cout << "Failed to load file." << endl;
         }
         
     } 
 
     else 
     {
-        std::cout << "New file created!" << std::endl;
+        cout << "New file created!" << endl;
     }
 
     // Handle login/registration and roles

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "LibraBook.h" // Include LibraBook header for book management
 
 class User // Class definition User
 {

@@ -164,6 +164,8 @@ void LibBook::BorrowedBooks() const
     {
         for (const Book* book : pair.second) // Loop through the books in the index
         {
+            if (book == nullptr) continue; // Skip null pointers
+
             if (book->borrowed) // If the book is borrowed
             {
                 std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed by: " << book->borrowedby << "\n -------- " << std::endl; 

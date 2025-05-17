@@ -64,7 +64,7 @@ int LibFile::loadFromCSV(LibBook& libBookInstance) // Extracts needed info from 
             titleIndex = i; 
         else if (headers[i] == "Author") 
             authorIndex = i; 
-        else if (headers[i] == "Genre") 
+        else if (headers[i] == "Main Genre") 
             genreIndex = i; 
         else if (headers[i] == "Borrowed")
             borrowedIndex = i; 
@@ -133,7 +133,7 @@ void LibFile::saveToCSV(LibBook& libBookInstance) // Saves the current collectio
         if (choice2 == 'y' || choice2 == 'Y' || created) 
         {
             std::ofstream NewFile(filename, std::ios::out); // Open file in overwrite mode
-            NewFile << "Title,Author,Genre,Borrowed,BorrowedBy\n"; // Write header to file
+            NewFile << "Title,Author,Main Genre,Borrowed,BorrowedBy\n"; // Write header to file
 
             for (const LibBook::Book& book : libBookInstance.getBooks()) // Iterate through the collection vector
             {
@@ -167,7 +167,7 @@ std::pair<std::string, int> LibFile::PromptFileOption()
 
     while (true)
     {
-        std::cout << "Would you like to 1. Create a new file\n2. Open an existing file?\n3. Exit: ";
+        std::cout << "Would you like to \n1. Create a new file\n2. Open an existing file?\n3. Exit: \n";
         std::cin >> choice;
 
         if (choice == 1 || choice == 2) 

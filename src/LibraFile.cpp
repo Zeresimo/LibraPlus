@@ -150,6 +150,36 @@ void LibFile::savetoCSV(LibBook& libBookInstance) // Saves the current collectio
     }
 }
 
+// Function to initialize the file and load data
+// from the CSV file if it exists
+std::pair<std::string, int> LibFile::PromptFileOption() 
+{
+    std::string filename;
+    int choice;
+
+    while (true)
+    {
+        std::cout << "Would you like to 1. Create a new file\n2. Open an existing file?\n3. Exit: ";
+        std::cin >> choice;
+
+        if (choice == 1 || choice == 2) 
+        {
+            std::cout << "Enter the name of the file (with .csv extension): ";
+            std::cin >> filename;
+            return { filename, choice }; // Return the filename and choice
+        } 
+        
+        else if (choice == 3) 
+        {
+            std::cout << "Exiting program" << std::endl;
+            exit(0); // Exit the program
+        } 
+        
+            std::cout << "Invalid choice. Please pick from 1 to 3" << std::endl;
+    }
+    
+}
+
 LibFile::~LibFile() // Destructor: closes the file stream
 {
     if (filestrm.is_open()) // If file is open
@@ -157,3 +187,4 @@ LibFile::~LibFile() // Destructor: closes the file stream
         filestrm.close(); // Close the file stream
     }
 }
+

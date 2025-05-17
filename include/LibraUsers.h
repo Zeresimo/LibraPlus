@@ -61,6 +61,10 @@ private:
 public:
     void addUser(); // Function to add a new user
     User* loginUser(); // Function to log in a user
+    User* handleLoginOrRegister(); // Function to handle login or registration
+    void handleRoleMenu(User* user, LibBook& bookManager); // Function to handle role menu
+    bool saveUsersToFile(const std::string& filename); // Function to save users to a file
+    bool loadUsersFromFile(const std::string& filename); // Function to load users from a file
     ~UserManagement(); // Destructor to clean up user pointers
 };
 

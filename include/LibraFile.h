@@ -18,6 +18,7 @@ public: // Methods or variables that can be accessed outside the class
     LibFile(const std::string& filePath); // Constructor with file path
     int csvload(LibBook& libBookInstance); // Loads the csv file and filters needed data
     void savetoCSV(LibBook& libBookInstance); // Saves all data to CSV file
+    std::pair<std::string, int> PromptFileOption(); // Prompts user for file options
     ~LibFile(); // Destructor to close file stream
 
 };

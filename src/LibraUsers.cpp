@@ -1,9 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include "LibraUsers.h"
 #include "LibraBook.h"
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <sstream>
 
 void Librarian::Displaymenu() const // Override Displaymenu function
     {
@@ -204,6 +206,115 @@ User* UserManagement::loginUser()
     }
     std::cout << "Too many failed attempts. Exiting." << std::endl; // Exit if too many attempts
     return nullptr; // Return nullptr if no matching user is found
+}
+
+User* UserManagement::handleLoginOrRegister()
+{
+    int choice;
+    while(true)
+    {
+        std::cout << "1. Register\n2. Login\n3. Exit" << std::endl; // Display options
+        std::cout << "Please choose an option: ";
+        std::cin >> choice; // Get user choice from input
+
+        if(choice == 1) // If user chooses to register
+        {
+            addUser(); // Call addUser function
+        }
+        else if(choice == 2) // If user chooses to login
+        {
+            User* user = loginUser(); // Call loginUser function
+            if(user != nullptr) // If user is not null
+            {
+                return user; // Return the logged-in user
+            }
+        }
+        else if(choice == 3) // If user chooses to exit
+        {
+            std::cout << "Exiting program." << std::endl; // Exit message
+            exit(0); // Exit the program
+        }
+        else
+        {
+            std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
+        }
+    }
+}
+
+void UserManagement::handleRoleMenu(User* user, LibBook& bookManager)
+{
+    if (user == nullptr) return; // Exit the function if user is null
+
+    if (user->canAddBook()) // If user is librarian
+    {
+        std::cout << "Welcome, Librarian!" << std::endl; // Welcome message
+        static_cast<Librarian*>(user)->handleLibrarianMenu(user, bookManager); // Assumes librarian role to continue
+    }
+    else // If user is student
+    {
+        std::cout << "Welcome, Student!" << std::endl; // Welcome message
+        static_cast<Student*>(user)->handleStudentMenu(user, bookManager); // Assumes student role to continue
+    }
+}
+
+bool UserManagement::saveUsersToFile(const std::string& filename)
+{
+    std::ofstream outFile(filename); // Open file for writing
+    if (!outFile) // Check if file opened successfully
+    {
+        std::cerr << "Error opening file for writing." << std::endl; // Error message
+        return false; // Exit function if file cannot be opened
+    }
+
+    outFile << "Username,Password,Role\n"; // Write header to file
+
+    for (const auto& user : LoginInfo) // Iterate through the vector of users
+    {
+        if (user != nullptr)
+        {
+            outFile << user->getUsername() << "," << user->getPassword() << "," << (user->canAddBook() ? "Librarian" : "Student") << std::endl; 
+            // Write username, password, role to file
+        }
+        
+    }
+
+    outFile.close(); // Close the file
+    return true; // Return true to indicate success
+}
+
+bool UserManagement::loadUsersFromFile(const std::string& filename)
+{
+    std::ifstream inFile(filename);
+    if (!inFile)
+    {
+        std::cerr << "Error opening file for reading." << std::endl;
+        return false;
+    }
+
+    std::string line;
+    std::getline(inFile, line); // Skip header
+
+    while (std::getline(inFile, line))
+    {
+        std::stringstream ss(line);
+        std::string username, password, role;
+
+        std::getline(ss, username, ',');
+        std::getline(ss, password, ',');
+        std::getline(ss, role, ',');
+
+        if (role == "Librarian")
+        {
+            LoginInfo.push_back(new Librarian(username, password));
+        }
+        else if (role == "Student")
+        {
+            LoginInfo.push_back(new Student(username, password));
+        }
+    }
+
+    inFile.close();
+    return true;
 }
 
 UserManagement::~UserManagement()

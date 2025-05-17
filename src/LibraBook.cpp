@@ -130,3 +130,65 @@ bool LibBook::BorrowBook(const std::string& title, const std::string& username)
     std::cout << "Book is already borrowed." << std::endl; 
     return false; // Return failure
 }
+
+bool LibBook::ReturnBook(const std::string& title, const std::string& username)
+{
+    auto it = titleIndex.find(title); // Find the book by title
+    if (it != titleIndex.end()) // If the book exists
+    {
+        for (Book* book : it->second) // Loop through the matching books
+        {
+            if (book->borrowed && book->borrowedby == username) // If the book is borrowed by the user
+            {
+                book->borrowed = false; // Mark the book as returned
+                book->borrowedby = ""; // Clear the user who borrowed the book
+                std::cout << "Book returned successfully." << std::endl; 
+                return true; // Return success
+            }
+        }
+    }
+    std::cout << "Book return failed. Book may not be borrowed by you." << std::endl;
+    return false; // Return failure
+}
+
+void LibBook::BorrowedBooks() const
+{
+    std::cout << "Borrowed books:" << std::endl; // Display borrowed books
+    bool found = false; // Flag to check if any borrowed books exist
+    for (const auto& pair : titleIndex)
+    {
+        for (const Book* book : pair.second) // Loop through the books in the index
+        {
+            if (book->borrowed) // If the book is borrowed
+            {
+                std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed by: " << book->borrowedby << "\n -------- " << std::endl; 
+                found = true; // Set flag to true
+            }
+        }
+    }
+    if (!found) // If no borrowed books exist
+    {
+        std::cout << "No borrowed books." << std::endl; // Display message
+    }
+}
+
+void LibBook::BorrowedBooksByUser(const std::string& username) const
+{
+    std::cout << "Borrowed books by " << username << std::endl; // Display borrowed books
+    bool found = false; // Flag to check if any borrowed books exist
+    for (const auto& pair : titleIndex)
+    {
+        for (const Book* book : pair.second) // Loop through the books in the index
+        {
+            if (book->borrowedby == username) // If the book is borrowed
+            {
+                std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n -------- " << std::endl; 
+                found = true; // Set flag to true
+            }
+        }
+    }
+    if (!found) // If no borrowed books exist
+    {
+        std::cout << "No borrowed books." << std::endl; // Display message
+    }
+}

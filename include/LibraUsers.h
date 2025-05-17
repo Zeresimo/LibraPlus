@@ -41,6 +41,7 @@ public:
     bool canAddBook() const override { return true; } // Librarian can add books
     bool canRemoveBook() const override { return true; } // Librarian can remove books
     bool canViewBorrowedBooks() const override { return true; } // Librarian can view borrowed books
+    void handleLibrarianMenu(User* user, LibBook& bookManager); // Function to handle librarian menu
 };
 
 class Student : public User // Class definition Student inheriting from User
@@ -50,6 +51,7 @@ public:
     void Displaymenu() const override; // Override Displaymenu function
     void displayInfo() const override; // Override displayInfo function
     bool canBorrowBook() const override { return true; } // Student can borrow books
+    void handleStudentMenu(User* user, LibBook& bookManager); // Function to handle student menu 
 };
 
 class UserManagement // Class definition UserManagement

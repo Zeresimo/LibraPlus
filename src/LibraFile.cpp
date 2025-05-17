@@ -37,7 +37,10 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
     std::string final;
     int titleIndex = -1; 
     int authorIndex = -1; 
-    int genreIndex = -1; 
+    int genreIndex = -1;
+    int borrowedIndex = -1;
+    int borrowedbyIndex = -1;
+
     std::string column; // Variable to store each column name
     std::vector<std::string> headers; // Vector to store header names
 
@@ -63,6 +66,10 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
             authorIndex = i; 
         else if (headers[i] == "Genre") 
             genreIndex = i; 
+        else if (headers[i] == "Borrowed")
+            borrowedIndex = i; 
+        else if (headers[i] == "BorrowedBy")
+            borrowedbyIndex = i;
     }
 
     if (titleIndex == -1 || authorIndex == -1 || genreIndex == -1) // If any of the indices are not found
@@ -87,9 +94,14 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
                 tempBook.author = temp; 
             else if (k == genreIndex) 
                 tempBook.genre = temp; 
+            else if (k == borrowedIndex)
+                tempBook.borrowed = (temp == "true" || temp == "1"); // Convert string to boolean
+            else if (k == borrowedbyIndex)
+                tempBook.borrowedby = temp;
         }
 
-        if(tempBook.title.empty() || tempBook.author.empty() || tempBook.genre.empty()) // If any of the fields are empty
+        if(tempBook.title.empty() || tempBook.author.empty() || tempBook.genre.empty()) 
+        // If any of the fields are empty
         {
             std::cout << "Error: Missing data in file." << std::endl; 
             continue; // Skip this iteration
@@ -118,10 +130,10 @@ void LibFile::savetoCSV(LibBook& libBookInstance) // Saves the current collectio
         if (choice2 == 'y' || choice2 == 'Y' || created) 
         {
             std::ofstream NewFile(filename, std::ios::out); // Open file in overwrite mode
-            NewFile << "Title,Author,Genre,Borrowed\n"; // Write header to file
+            NewFile << "Title,Author,Genre,Borrowed,BorrowedBy\n"; // Write header to file
             for (const LibBook::Book& book : libBookInstance.getBooks()) // Iterate through the collection vector
             {
-                NewFile << book.title << "," << book.author << "," << book.genre << "," << book.borrowed << "\n"; // Write book data to file
+                NewFile << book.title << "," << book.author << "," << book.genre << "," << (book.borrowed ? "1" : "0") << "," <<book.borrowedby << "\n"; // Write book data to file
             }
             NewFile.close(); // Close the file stream
         }

@@ -52,7 +52,9 @@ void Librarian::handleLibrarianMenu(User* user, LibBook& bookManager)
         {
             std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
         }
+
     } while (choice != 5); // Loop until user chooses to exit
+
     std::cout << "Exiting Librarian Menu." << std::endl; // Exit message
     
 }
@@ -72,6 +74,7 @@ void Student::displayInfo() const // Override displayInfo function
 void Student::handleStudentMenu(User* user, LibBook& bookManager)
 {
     int choice;
+
     do
     {
         user->Displaymenu(); // Display student menu
@@ -117,6 +120,7 @@ void Student::handleStudentMenu(User* user, LibBook& bookManager)
         }
 
     } while (choice != 6); // Loop until user chooses to exit
+
     std::cout << "Exiting Student Menu." << std::endl; // Exit message
     
 }
@@ -126,8 +130,10 @@ void UserManagement::addUser()
     std::string username, password, confirmPassword;
     char userType;
     int counter = -1;
+
     std::cout << "Are you 1.) Librarian or 2.) Student? (1/2): ";
     std::cin >> userType; // Get user type from input
+
     while (userType != '1' && userType != '2') // Validate input
     {
         std::cout << "Invalid input. Please enter 1 for Librarian or 2 for Student: ";
@@ -139,6 +145,7 @@ void UserManagement::addUser()
         bool usernameExists = false; // Flag to check if username exists
         std::cout << "Enter username: ";
         std::cin >> username;
+
         for (const auto& user : LoginInfo) // Check if username already exists
         {
             if (user->getUsername() == username) // If username exists
@@ -148,6 +155,7 @@ void UserManagement::addUser()
                 break; // Continue to prompt for a new username 
             }
         }
+
         if (!usernameExists)
         {
             counter = 0; // Set counter to 0 to exit the loop
@@ -161,24 +169,29 @@ void UserManagement::addUser()
         std::cin >> password; // Get password from input
         std::cout << "Confirm password: ";
         std::cin >> confirmPassword; // Get confirmation password from input
+
         if (password == confirmPassword) // Check if passwords match
         {
             break; // Exit loop if passwords match
         }
+
         else
         {
             std::cout << "Passwords do not match. Please try again." << std::endl; // Prompt for re-entry
         }
+
     }
 
     if (userType == '1') // If user is a librarian
     {
         LoginInfo.push_back(new Librarian(username, password)); // Add new librarian to the vector
     }
+
     else if (userType == '2') // If user is a student
     {
         LoginInfo.push_back(new Student(username, password)); // Add new student to the vector
     }
+
 }
 
 User* UserManagement::loginUser()
@@ -202,15 +215,20 @@ User* UserManagement::loginUser()
                 return user; // Return the user object if credentials are correct
             }
         }
+
         std::cout << "Invalid username or password. Please try again." << std::endl; // Prompt for re-entry
+
     }
+
     std::cout << "Too many failed attempts. Exiting." << std::endl; // Exit if too many attempts
     return nullptr; // Return nullptr if no matching user is found
+
 }
 
 User* UserManagement::handleLoginOrRegister()
 {
     int choice;
+
     while(true)
     {
         std::cout << "1. Register\n2. Login\n3. Exit" << std::endl; // Display options
@@ -221,6 +239,7 @@ User* UserManagement::handleLoginOrRegister()
         {
             addUser(); // Call addUser function
         }
+
         else if(choice == 2) // If user chooses to login
         {
             User* user = loginUser(); // Call loginUser function
@@ -229,16 +248,20 @@ User* UserManagement::handleLoginOrRegister()
                 return user; // Return the logged-in user
             }
         }
+
         else if(choice == 3) // If user chooses to exit
         {
             std::cout << "Exiting program." << std::endl; // Exit message
             exit(0); // Exit the program
         }
+
         else
         {
             std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
         }
+
     }
+
 }
 
 void UserManagement::handleRoleMenu(User* user, LibBook& bookManager)
@@ -250,16 +273,19 @@ void UserManagement::handleRoleMenu(User* user, LibBook& bookManager)
         std::cout << "Welcome, Librarian!" << std::endl; // Welcome message
         static_cast<Librarian*>(user)->handleLibrarianMenu(user, bookManager); // Assumes librarian role to continue
     }
+
     else // If user is student
     {
         std::cout << "Welcome, Student!" << std::endl; // Welcome message
         static_cast<Student*>(user)->handleStudentMenu(user, bookManager); // Assumes student role to continue
     }
+
 }
 
 bool UserManagement::saveUsersToFile(const std::string& filename)
 {
     std::ofstream outFile(filename); // Open file for writing
+
     if (!outFile) // Check if file opened successfully
     {
         std::cerr << "Error opening file for writing." << std::endl; // Error message
@@ -285,6 +311,7 @@ bool UserManagement::saveUsersToFile(const std::string& filename)
 bool UserManagement::loadUsersFromFile(const std::string& filename)
 {
     std::ifstream inFile(filename);
+
     if (!inFile)
     {
         std::cerr << "Error opening file for reading." << std::endl;
@@ -307,10 +334,12 @@ bool UserManagement::loadUsersFromFile(const std::string& filename)
         {
             LoginInfo.push_back(new Librarian(username, password));
         }
+
         else if (role == "Student")
         {
             LoginInfo.push_back(new Student(username, password));
         }
+        
     }
 
     inFile.close();

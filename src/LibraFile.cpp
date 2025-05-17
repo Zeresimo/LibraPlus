@@ -31,7 +31,7 @@ LibFile::LibFile(const std::string& filePath) : filename(filePath)
     }
 }
 
-int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv file
+int LibFile::loadFromCSV(LibBook& libBookInstance) // Extracts needed info from csv file
 {
     std::string initial;
     std::string final;
@@ -74,7 +74,7 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
 
     if (titleIndex == -1 || authorIndex == -1 || genreIndex == -1) // If any of the indices are not found
     {
-        std::cout << "Error: Header not found in file." << std::endl; // Print error message
+        std::cerr << "Error: Header not found in file." << std::endl; // Print error message
         filestrm.close(); // Close the file stream
         return -1; // Exit the function
     } // Error Handling in case of missing header, or csv doesn't have data needed
@@ -103,7 +103,7 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
         if(tempBook.title.empty() || tempBook.author.empty() || tempBook.genre.empty()) 
         // If any of the fields are empty
         {
-            std::cout << "Error: Missing data in file." << std::endl; 
+            std::cerr << "Error: Missing data in file." << std::endl; 
             continue; // Skip this iteration
         }
 
@@ -114,35 +114,44 @@ int LibFile::csvload(LibBook& libBookInstance) // Extracts needed info from csv 
     
 }
 
-void LibFile::savetoCSV(LibBook& libBookInstance) // Saves the current collection to the CSV file
+void LibFile::saveToCSV(LibBook& libBookInstance) // Saves the current collection to the CSV file
 {
     char choice;
     std::cout << "Do you want to save the file? (y/n): ";
     std::cin >> choice; 
+
     if (choice == 'y' || choice == 'Y' ) // If user chooses save
     {
         char choice2; // Choice for overwrite
+
         if (!created)
         {
             std::cout << "File already exists. Do you want to overwrite it? (y/n): ";
             std::cin >> choice2; 
         }
+
         if (choice2 == 'y' || choice2 == 'Y' || created) 
         {
             std::ofstream NewFile(filename, std::ios::out); // Open file in overwrite mode
             NewFile << "Title,Author,Genre,Borrowed,BorrowedBy\n"; // Write header to file
+
             for (const LibBook::Book& book : libBookInstance.getBooks()) // Iterate through the collection vector
             {
                 NewFile << book.title << "," << book.author << "," << book.genre << "," << (book.borrowed ? "1" : "0") << "," <<book.borrowedby << "\n"; // Write book data to file
             }
+            
+            std::cout << "File saved successfully!" << std::endl; // Success message
             NewFile.close(); // Close the file stream
         }
+
         else // If user chooses not to overwrite
         {
             std::cout << "File not saved." << std::endl; 
             return; 
         }
+
     }
+    
     else // If user chooses not to save
     {
         std::cout << "File not saved." << std::endl; 
@@ -150,8 +159,7 @@ void LibFile::savetoCSV(LibBook& libBookInstance) // Saves the current collectio
     }
 }
 
-// Function to initialize the file and load data
-// from the CSV file if it exists
+// Prompts user to choose between creating a new file or opening an existing one
 std::pair<std::string, int> LibFile::PromptFileOption() 
 {
     std::string filename;

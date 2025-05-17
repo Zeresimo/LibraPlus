@@ -10,7 +10,7 @@ int main()
     UserManagement userManager;
 
     // Automatically load users
-    userManager.loadUsersFromFile("users.csv");
+    userManager.loadUsersFromFile("LoginInfo.csv");
 
     // Prompt for filename and action with temporary LibFile instance
     LibFile temp;
@@ -22,8 +22,11 @@ int main()
     LibFile FileManager(filename);
 
     // If opening an existing file, load book data
-    if (choice == 2) {
-        if (FileManager.csvload(bookManager) == 0) {
+    if (choice == 2) 
+    {
+
+        if (FileManager.loadFromCSV(bookManager) == 0) 
+        {
             std::cout << "File successfully loaded!" << std::endl;
         } 
 
@@ -31,6 +34,7 @@ int main()
         {
             std::cout << "Failed to load file." << std::endl;
         }
+        
     } 
 
     else 
@@ -42,10 +46,10 @@ int main()
     User* user = userManager.handleLoginOrRegister();
     userManager.handleRoleMenu(user, bookManager);
 
-    FileManager.savetoCSV(bookManager); // Save book data to file
+    FileManager.saveToCSV(bookManager); // Save book data to file
 
     // Save user data on exit
-    userManager.saveUsersToFile("users.csv");
+    userManager.saveUsersToFile("LoginInfo.csv");
 
     return 0;
 }

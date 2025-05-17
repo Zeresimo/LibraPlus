@@ -86,6 +86,8 @@ std::vector<LibBook::Book>& LibBook::getBooks()
 void LibBook::createbook() // Creates a new book as defined by user
 {
     Book newBook; // Create a new Book object
+    newBook.borrowed = false; // Set borrowed status to false
+    newBook.borrowedby = ""; // Set borrowed by to empty string
 
     std::cout << "Enter the title of the book: ";
     std::getline(std::cin, newBook.title); // Get title from user
@@ -134,6 +136,7 @@ bool LibBook::BorrowBook(const std::string& title, const std::string& username)
 bool LibBook::ReturnBook(const std::string& title, const std::string& username)
 {
     auto it = titleIndex.find(title); // Find the book by title
+
     if (it != titleIndex.end()) // If the book exists
     {
         for (Book* book : it->second) // Loop through the matching books
@@ -147,6 +150,7 @@ bool LibBook::ReturnBook(const std::string& title, const std::string& username)
             }
         }
     }
+
     std::cout << "Book return failed. Book may not be borrowed by you." << std::endl;
     return false; // Return failure
 }
@@ -155,6 +159,7 @@ void LibBook::BorrowedBooks() const
 {
     std::cout << "Borrowed books:" << std::endl; // Display borrowed books
     bool found = false; // Flag to check if any borrowed books exist
+
     for (const auto& pair : titleIndex)
     {
         for (const Book* book : pair.second) // Loop through the books in the index
@@ -166,6 +171,7 @@ void LibBook::BorrowedBooks() const
             }
         }
     }
+
     if (!found) // If no borrowed books exist
     {
         std::cout << "No borrowed books." << std::endl; // Display message
@@ -176,6 +182,7 @@ void LibBook::BorrowedBooksByUser(const std::string& username) const
 {
     std::cout << "Borrowed books by " << username << std::endl; // Display borrowed books
     bool found = false; // Flag to check if any borrowed books exist
+
     for (const auto& pair : titleIndex)
     {
         for (const Book* book : pair.second) // Loop through the books in the index
@@ -187,6 +194,7 @@ void LibBook::BorrowedBooksByUser(const std::string& username) const
             }
         }
     }
+    
     if (!found) // If no borrowed books exist
     {
         std::cout << "No borrowed books." << std::endl; // Display message

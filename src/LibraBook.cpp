@@ -72,8 +72,8 @@ void LibBook::displayCollection() const
     std::cout << "Books in the collection:" << std::endl;
     for(const Book& book : LibraPlus) // Iterate through the collection vector
     {
-        std::cout << "Title: " <<  book.title << "\n" <<", Author: " << book.author << 
-        "\n" << ", Genre: " << book.genre << "\n" << ", Borrowed: " << (book.borrowed ? "Yes" : "No") << std::endl; 
+        std::cout << "Title: " <<  book.title << "\n" <<"Author: " << book.author << 
+        "\n" << "Genre: " << book.genre << "\n" << "Borrowed: " << (book.borrowed ? "Yes" : "No") << std::endl; 
     }
     return;
 }
@@ -88,6 +88,8 @@ void LibBook::createbook() // Creates a new book as defined by user
     Book newBook; // Create a new Book object
     newBook.borrowed = false; // Set borrowed status to false
     newBook.borrowedby = ""; // Set borrowed by to empty string
+
+    std::cin.ignore(); // Ignore any leftover newline characters in the input buffer
 
     std::cout << "Enter the title of the book: ";
     std::getline(std::cin, newBook.title); // Get title from user
@@ -157,20 +159,15 @@ bool LibBook::ReturnBook(const std::string& title, const std::string& username)
 
 void LibBook::BorrowedBooks() const
 {
-    std::cout << "Borrowed books:" << std::endl; // Display borrowed books
+    std::cout << "Borrowed books:" << std::endl; 
     bool found = false; // Flag to check if any borrowed books exist
 
-    for (const auto& pair : titleIndex)
+    for (const Book& book : LibraPlus)
     {
-        for (const Book* book : pair.second) // Loop through the books in the index
+        if (book.borrowed)
         {
-            if (book == nullptr) continue; // Skip null pointers
-
-            if (book->borrowed) // If the book is borrowed
-            {
-                std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed by: " << book->borrowedby << "\n -------- " << std::endl; 
-                found = true; // Set flag to true
-            }
+            std::cout << "Title: " << book.title << "\n Author: " << book.author << "\n Genre: " << book.genre << "\n Borrowed by: " << book.borrowedby << "\n -------- " << std::endl; 
+            found = true; // Set flag to true
         }
     }
 

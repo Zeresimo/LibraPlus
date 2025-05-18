@@ -9,13 +9,13 @@
 
 void Librarian::Displaymenu() const // Override Displaymenu function
     {
-        std::cout << "Librarian Menu:" << std::endl;
+        std::cout << "\nLibrarian Menu:" << std::endl;
         std::cout << "1. Add Book\n2. View Borrowed Books\n3. View whole collection\n4. My Info \n5. Exit" << std::endl; 
     }
 
 void Librarian::displayInfo() const // Override displayInfo function
     {
-        std::cout << "Librarian Username: " << username << std::endl; 
+        std::cout << "\nLibrarian Username: " << username << std::endl; 
         std::cout << "Privileges: Full access to the library system." << std::endl; 
     }
 
@@ -48,26 +48,29 @@ void Librarian::handleLibrarianMenu(User* user, LibBook& bookManager)
             user->displayInfo(); // Call displayInfo function
         }
 
+        else if (choice == 5) // If user chooses to exit
+        {
+            std::cout << "Exiting Librarian Menu." << std::endl; // Exit message
+        }
+        
         else
         {
             std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
         }
 
     } while (choice != 5); // Loop until user chooses to exit
-
-    std::cout << "Exiting Librarian Menu." << std::endl; // Exit message
     
 }
 
 void Student::Displaymenu() const // Override Displaymenu function
     {
-        std::cout << "Student Menu:" << std::endl;
+        std::cout << "\nStudent Menu:" << std::endl;
         std::cout << "1. Borrow Book\n2. Return Book\n3. View borrowed books \n4. View whole collection\n5. My Info \n6. Exit" << std::endl; 
     }
 
 void Student::displayInfo() const // Override displayInfo function
     {
-        std::cout << "Student Username: " << username << std::endl; // Display student information
+        std::cout << "\nStudent Username: " << username << std::endl; // Display student information
         std::cout << "Privileges: Limited access to the library system." << std::endl; // Display privileges
     }
 
@@ -131,7 +134,7 @@ void UserManagement::addUser()
     char userType;
     int counter = -1;
 
-    std::cout << "Are you 1.) Librarian or 2.) Student? (1/2): ";
+    std::cout << "\nAre you 1.) Librarian or 2.) Student? (1/2): ";
     std::cin >> userType; // Get user type from input
 
     while (userType != '1' && userType != '2') // Validate input
@@ -197,7 +200,7 @@ void UserManagement::addUser()
 User* UserManagement::loginUser()
 {
     std::string username, password;
-    std::cout << "Welcome to the Library System!" << std::endl;
+    std::cout << "\nWelcome to the Library System!" << std::endl;
     std::cout << "Please log in to continue." << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     
@@ -231,7 +234,7 @@ User* UserManagement::handleLoginOrRegister()
 
     while(true)
     {
-        std::cout << "1. Register\n2. Login\n3. Exit" << std::endl; // Display options
+        std::cout << "\n1. Register\n2. Login\n3. Exit" << std::endl; // Display options
         std::cout << "Please choose an option: ";
         std::cin >> choice; // Get user choice from input
 

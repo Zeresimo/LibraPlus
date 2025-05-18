@@ -6,11 +6,12 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
+#include <cstdlib>
 
 void Librarian::Displaymenu() const // Override Displaymenu function
     {
         std::cout << "\nLibrarian Menu:" << std::endl;
-        std::cout << "1. Add Book\n2. View Borrowed Books\n3. View whole collection\n4. My Info \n5. Exit" << std::endl; 
+        std::cout << "1. Add Book\n2. View Borrowed Books\n3. View whole collection\n4. Filtered Search \n5. My Info \n6. Exit" << std::endl; 
     }
 
 void Librarian::displayInfo() const // Override displayInfo function
@@ -19,7 +20,7 @@ void Librarian::displayInfo() const // Override displayInfo function
         std::cout << "Privileges: Full access to the library system." << std::endl; 
     }
 
-void Librarian::handleLibrarianMenu(User* user, LibBook& bookManager)
+void Librarian::handleLibrarianMenu(User* user, LibBook& bookManager)   
 {
     int choice;
     do
@@ -27,45 +28,53 @@ void Librarian::handleLibrarianMenu(User* user, LibBook& bookManager)
         user->Displaymenu(); // Display librarian menu
         std::cout << "Enter your choice: ";
         std::cin >> choice; // Get user choice from input
-
-        if (choice == 1) // If user chooses to add a book
+        switch(choice)
         {
-            bookManager.createbook(); // Call createbook function
+            case 1: // If user chooses to add a book
+                bookManager.createbook(); // Call createbook function
+                break;
+
+            case 2: // If user chooses to view borrowed books
+                bookManager.BorrowedBooks(); // Call BorrowedBooks function
+                break;
+
+            case 3: // If user chooses to view the whole collection
+                bookManager.displayCollection(); // Call displayCollection function
+                break;
+
+            case 4: // If user chooses to do filtered search
+                user->searchMenu(bookManager); // Call searchMenu function
+                break;
+
+            case 5: // If user chooses to view their information
+                user->displayInfo(); // Call displayInfo function
+                break;
+
+            case 6: // If user chooses to exit
+                std::cout << "Exiting Librarian Menu." << std::endl; // Exit message
+                break;
+            
+            default: // If user enters an invalid choice
+                std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
         }
 
-        else if (choice == 2) // If user chooses to view borrowed books
+        if (choice != 6)
         {
-            bookManager.BorrowedBooks(); // Call BorrowedBooks function
+            std::cout << "Press Enter to continue..."; // Prompt to continue
+            std::cin.ignore(); // Ignore any newline characters left in the input buffer
+            std::cin.get(); // Wait for user to press Enter
+            clearScreen(); // Clear the console screen
+            
         }
 
-        else if (choice == 3) // If user chooses to view the whole collection
-        {
-            bookManager.displayCollection(); // Call displayCollection function
-        }
-
-        else if (choice == 4) // If user chooses to view their information
-        {
-            user->displayInfo(); // Call displayInfo function
-        }
-
-        else if (choice == 5) // If user chooses to exit
-        {
-            std::cout << "Exiting Librarian Menu." << std::endl; // Exit message
-        }
-        
-        else
-        {
-            std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
-        }
-
-    } while (choice != 5); // Loop until user chooses to exit
+    } while (choice != 6); // Loop until user chooses to exit
     
 }
 
 void Student::Displaymenu() const // Override Displaymenu function
     {
         std::cout << "\nStudent Menu:" << std::endl;
-        std::cout << "1. Borrow Book\n2. Return Book\n3. View borrowed books \n4. View whole collection\n5. My Info \n6. Exit" << std::endl; 
+        std::cout << "1. Borrow Book\n2. Return Book\n3. View borrowed books \n4. View whole collection\n5. Filtered Search\n6. My Info \n7. Exit" << std::endl; 
     }
 
 void Student::displayInfo() const // Override displayInfo function
@@ -84,48 +93,61 @@ void Student::handleStudentMenu(User* user, LibBook& bookManager)
         std::cout << "Enter your choice: ";
         std::cin >> choice; // Get user choice from input
 
-        if (choice == 1) // If user chooses to borrow a book
+        switch(choice)
         {
-            std::string title;
-            std::cout << "Enter the title of the book you want to borrow: ";
+            case 1: // If user chooses to borrow a book
+            {
+                std::string title;
+                std::cout << "Enter the title of the book you want to borrow: ";
+                std::cin.ignore(); // Ignore any newline characters left in the input buffer
+                std::getline(std::cin, title); // Get book title from input
+                bookManager.BorrowBook(title, user->getUsername()); // Call BorrowBook function
+                break;
+            }
+
+            case 2: // If user chooses to return a book
+            {    
+                std::string title;
+                std::cout << "Enter the title of the book you want to return: ";
+                std::cin.ignore(); // Ignore any newline characters left in the input buffer
+                std::getline(std::cin, title); // Get book title from input
+                bookManager.ReturnBook(title, user->getUsername()); // Call ReturnBook function
+                break;
+            }
+
+            case 3: // If user chooses to view borrowed books
+                bookManager.BorrowedBooksByUser(user->getUsername()); // Call BorrowedBooksByUser function
+                break;
+
+            case 4: // If user chooses to view the whole collection
+                bookManager.displayCollection(); // Call displayCollection function
+                break;
+
+            case 5: // If user chooses to do filtered search
+                user->searchMenu(bookManager); // Call searchMenu function
+                break;
+            
+            case 6: // If user chooses to view their information
+                user->displayInfo(); // Call displayInfo function
+                break;
+
+            case 7: // If user chooses to exit
+                std::cout << "Exiting Student Menu." << std::endl; // Exit message
+                break;
+
+            default: // If user enters an invalid choice
+                std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
+        }
+
+        if (choice != 7)
+        {
+            std::cout << "Press Enter to continue..."; // Prompt to continue
             std::cin.ignore(); // Ignore any newline characters left in the input buffer
-            std::getline(std::cin, title); // Get book title from input
-            bookManager.BorrowBook(title, user->getUsername()); // Call BorrowBook function
+            std::cin.get(); // Wait for user to press Enter
+            clearScreen(); // Clear the console screen
         }
 
-        else if (choice == 2) // If user chooses to return a book
-        {
-            std::string title;
-            std::cout << "Enter the title of the book you want to return: ";
-            std::cin.ignore(); // Ignore any newline characters left in the input buffer
-            std::getline(std::cin, title); // Get book title from input
-            bookManager.ReturnBook(title, user->getUsername()); // Call ReturnBook function
-        }
-
-        else if (choice == 3) // If user chooses to view borrowed books
-        {
-            bookManager.BorrowedBooksByUser(user->getUsername()); // Call BorrowedBooksByUser function
-        }
-
-        else if (choice == 4) // If user chooses to view the whole collection
-        {
-            bookManager.displayCollection(); // Call displayCollection function
-        }
-
-        else if (choice == 5) // If user chooses to view their information
-        {
-            user->displayInfo(); // Call displayInfo function
-        }
-
-        else
-        {
-            std::cout << "Invalid choice. Please try again." << std::endl; // Prompt for re-entry
-        }
-
-    } while (choice != 6); // Loop until user chooses to exit
-
-    std::cout << "Exiting Student Menu." << std::endl; // Exit message
-    
+    } while (choice != 7); // Loop until user chooses to exit
 }
 
 void UserManagement::addUser()
@@ -265,6 +287,52 @@ User* UserManagement::handleLoginOrRegister()
 
     }
 
+}
+
+void User::searchMenu(const LibBook& bookManager)
+{
+    int choice;
+    std::string input;
+    do
+    {
+        std::cout << "\nSearch Menu:\n" << "1. Search by Title\n" << "2. Search by Author\n" << "3. Search by Genre\n" << "4. Exit" << std::endl;
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+        std::cin.ignore(); // Clear newline from buffer
+
+        switch (choice)
+        {
+            case 1:
+                std::cout << "Enter title: ";
+                std::getline(std::cin, input);
+                bookManager.ByTitle(input);
+                break;
+            case 2:
+                std::cout << "Enter author: ";
+                std::getline(std::cin, input);
+                bookManager.ByAuthor(input);
+                break;
+            case 3:
+                std::cout << "Enter genre: ";
+                std::getline(std::cin, input);
+                bookManager.ByGenre(input);
+                break;
+            case 4:
+                std::cout << "Returning to main menu...\n";
+                break;
+            default:
+                std::cerr << "Invalid choice. Try again.\n";
+        }
+    } while (choice != 4);
+}
+
+void User::clearScreen() 
+{
+#ifdef _WIN32
+    std::system("cls"); // Windows
+#else
+    std::system("clear"); // Unix/Linux/macOS
+#endif
 }
 
 void UserManagement::handleRoleMenu(User* user, LibBook& bookManager)

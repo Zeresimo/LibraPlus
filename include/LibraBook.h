@@ -44,6 +44,8 @@ public: // Methods or variables that can be accessed from outside the class
     void BorrowedBooks() const; // Displays borrowed books
     void BorrowedBooksByUser(const std::string& username) const; // Displays borrowed books by user
 
+    void rebuildIndex(); // Rebuilds the index for the collection
+
 private: // Methods or variables that can only be accessed from within the class
     std::vector<Book> LibraPlus; // Vector to store books
     std::unordered_map<std::string, std::vector<Book*>> titleIndex; // Map to index books by title

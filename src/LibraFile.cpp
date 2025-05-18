@@ -109,7 +109,7 @@ int LibFile::loadFromCSV(LibBook& libBookInstance) // Extracts needed info from 
 
         libBookInstance.addBook(tempBook); // Add the book to the collection
     }
-
+    libBookInstance.rebuildIndex(); // Rebuild the index for the collection
     return 0;
     
 }

@@ -101,16 +101,13 @@ void LibBook::createbook() // Creates a new book as defined by user
     std::getline(std::cin, newBook.genre); // Get genre from user
 
     addBook(newBook); // Add the book to the collection
+    std::cout << "Book added successfully." << std::endl; // Display success message
+    rebuildIndex(); // Rebuild the index for the collection
 }
 
 void LibBook::addBook(const Book& book) // Adds book into the collection vector
 {
     LibraPlus.push_back(book); // Add book to the collection vector
-    Book* ptr = &LibraPlus.back(); // Get pointer to the last book added
-    ptr->borrowed = false; // Set borrowed status to false
-    titleIndex[book.title].push_back(ptr); // Index book by title
-    authorIndex[book.author].push_back(ptr); // Index book by author
-    genreIndex[book.genre].push_back(ptr); // Index book by genre
 }
 
 bool LibBook::BorrowBook(const std::string& title, const std::string& username)
@@ -159,15 +156,25 @@ bool LibBook::ReturnBook(const std::string& title, const std::string& username)
 
 void LibBook::BorrowedBooks() const
 {
-    std::cout << "Borrowed books:" << std::endl; 
+    std::cout << "Borrowed books:" << std::endl; // Display borrowed books
     bool found = false; // Flag to check if any borrowed books exist
 
-    for (const Book& book : LibraPlus)
+    for (const auto& pair : titleIndex)
     {
-        if (book.borrowed)
+        for (const Book* book : pair.second) // Loop through the books in the index
         {
-            std::cout << "Title: " << book.title << "\n Author: " << book.author << "\n Genre: " << book.genre << "\n Borrowed by: " << book.borrowedby << "\n -------- " << std::endl; 
-            found = true; // Set flag to true
+            
+            if (book == nullptr) // Skip null pointers
+            {
+                std::cerr << "Null pointer found in index." << std::endl; // Debug message
+                continue; // Skip this iteration
+            }
+
+            if (book && book->borrowed) // If the book is borrowed
+            {
+                std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed by: " << book->borrowedby << "\n -------- " << std::endl; 
+                found = true; // Set flag to true
+            }
         }
     }
 
@@ -175,6 +182,7 @@ void LibBook::BorrowedBooks() const
     {
         std::cout << "No borrowed books." << std::endl; // Display message
     }
+
 }
 
 void LibBook::BorrowedBooksByUser(const std::string& username) const
@@ -197,5 +205,20 @@ void LibBook::BorrowedBooksByUser(const std::string& username) const
     if (!found) // If no borrowed books exist
     {
         std::cout << "No borrowed books." << std::endl; // Display message
+    }
+}
+
+void LibBook::rebuildIndex() // Rebuilds the index for the collection
+{
+    titleIndex.clear(); // Clear the title index
+    authorIndex.clear(); // Clear the author index
+    genreIndex.clear(); // Clear the genre index
+
+    for (Book& book : LibraPlus) // Loop through the collection
+    {
+        Book* ptr = &book; // Get pointer to the book
+        titleIndex[book.title].push_back(ptr); // Index book by title
+        authorIndex[book.author].push_back(ptr); // Index book by author
+        genreIndex[book.genre].push_back(ptr); // Index book by genre
     }
 }

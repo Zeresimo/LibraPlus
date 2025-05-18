@@ -2,11 +2,12 @@
 #include <fstream>
 #include "LibraUsers.h"
 #include "LibraBook.h"
+#include "LibraUtils.h"
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <sstream>
-#include <cstdlib>
+
 
 void Librarian::Displaymenu() const // Override Displaymenu function
     {
@@ -262,11 +263,13 @@ User* UserManagement::handleLoginOrRegister()
 
         if(choice == 1) // If user chooses to register
         {
+            clearScreen(); // Clear the console screen
             addUser(); // Call addUser function
         }
 
         else if(choice == 2) // If user chooses to login
         {
+            clearScreen(); // Clear the console screen
             User* user = loginUser(); // Call loginUser function
             if(user != nullptr) // If user is not null
             {
@@ -326,27 +329,20 @@ void User::searchMenu(const LibBook& bookManager)
     } while (choice != 4);
 }
 
-void User::clearScreen() 
-{
-#ifdef _WIN32
-    std::system("cls"); // Windows
-#else
-    std::system("clear"); // Unix/Linux/macOS
-#endif
-}
-
 void UserManagement::handleRoleMenu(User* user, LibBook& bookManager)
 {
     if (user == nullptr) return; // Exit the function if user is null
 
     if (user->canAddBook()) // If user is librarian
     {
+        clearScreen(); // Clear the console screen
         std::cout << "\nWelcome, Librarian!" << std::endl; // Welcome message
         static_cast<Librarian*>(user)->handleLibrarianMenu(user, bookManager); // Assumes librarian role to continue
     }
 
     else // If user is student
     {
+        clearScreen(); // Clear the console screen
         std::cout << "\nWelcome, Student!" << std::endl; // Welcome message
         static_cast<Student*>(user)->handleStudentMenu(user, bookManager); // Assumes student role to continue
     }

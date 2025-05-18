@@ -22,8 +22,7 @@ public:
     virtual void displayInfo() const = 0; 
 
     void searchMenu(const LibBook& bookManager); // Function to search for books in the library
-    void clearScreen(); // Function to clear the console screen;
-    
+
     std::string getUsername() const { return username; } 
     std::string getPassword() const { return password; } 
 

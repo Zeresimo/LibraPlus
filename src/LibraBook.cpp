@@ -1,5 +1,6 @@
 #include <iostream>
 #include "LibraBook.h"
+#include "LibraUtils.h"
 #include <unordered_map>
 #include <string>
 #include <vector>

@@ -14,6 +14,7 @@
                 "src\\LibraFile.cpp",
                 "src\\LibraBook.cpp",
                 "src\\LibraUsers.cpp",
+                "src\\LibraUtils.cpp",
                 "/Fe:LibraPlus.exe"
             ],
             "options": {

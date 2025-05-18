@@ -6,6 +6,8 @@
 #include <sstream>
 #include "LibraFile.h"
 #include "LibraBook.h"
+#include "LibraUsers.h"
+#include "LibraUtils.h"
 
 LibFile::LibFile() : filename("Library.csv")
 {
@@ -169,7 +171,7 @@ std::pair<std::string, int> LibFile::PromptFileOption()
     {
         std::cout << "Would you like to \n1. Create a new file\n2. Open an existing file?\n3. Exit: \n";
         std::cin >> choice;
-
+        clearScreen(); // Clear the screen
         if (choice == 1 || choice == 2) 
         {
             std::cout << "Enter the name of the file (with .csv extension): ";

@@ -2,38 +2,56 @@
 #define LIBRABOOK_H // Define LIBRABOOK_H
 
 #include <string>
+#include <vector> // Include vector library for dynamic arrays
+#include <unordered_map> // Include unordered_map library for hash tables
 
 class LibBook // Class definition LibBook
 {
 public: // Methods or variables that can be accessed from outside the class
-    // Constructor: initializes a book with a title, author, and year
-    LibBook(const std::string& title, const std::string& author, int year);
-
-    // Getter for the title of the book
-    std::string getTitle() const;
-
-    // Setter for the title of the book
-    void setTitle(const std::string& title);
-
-    // Getter for the author of the book
-    std::string getAuthor() const;
-
-    // Setter for the author of the book
-    void setAuthor(const std::string& author);
-
-    // Getter for the year the book was published
-    int getYear() const;
-
-    // Setter for the year the book was published
-    void setYear(int year);
+    struct Book
+    {
+        std::string title; // Title of the book
+        std::string author; // Author of the book
+        std::string genre; // Genre of the book
+        bool borrowed = false; // Borrowed status of the book
+        std::string borrowedby =""; // User who borrowed the book
+    };
 
     //  Displays the book's information
-    void displayBookInfo() const;
+    void displayCollection() const;
+
+    // Returns the collection of books
+    std::vector<Book>& getBooks();
+
+    // Displays books based on genre
+    void ByGenre(const std::string& genre) const;
+
+    // Displays books based on title
+    void ByTitle(const std::string& title) const;
+
+    // Displays books based on author
+    void ByAuthor(const std::string& author) const;
+
+    // Creates a new book as defined by user
+    void createbook(); 
+
+    // Adds a book to the collection
+    void addBook(const Book& book); 
+
+    bool BorrowBook(const std::string& title, const std::string& username); // Borrow a book
+    bool ReturnBook(const std::string& title, const std::string& username); // Return a book
+
+    void BorrowedBooks() const; // Displays borrowed books
+    void BorrowedBooksByUser(const std::string& username) const; // Displays borrowed books by user
+
+    void rebuildIndex(); // Rebuilds the index for the collection
 
 private: // Methods or variables that can only be accessed from within the class
-    std::string title;
-    std::string author;
-    int year;
+    std::vector<Book> LibraPlus; // Vector to store books
+    std::unordered_map<std::string, std::vector<Book*>> titleIndex; // Map to index books by title
+    std::unordered_map<std::string, std::vector<Book*>> authorIndex; // Map to index books by author
+    std::unordered_map<std::string, std::vector<Book*>> genreIndex; // Map to index books by genre
+
 }; // Signals the end of the class definition LibBook
 
 #endif // LIBRABOOK_H

@@ -1,27 +1,229 @@
 #include <iostream>
 #include "LibraBook.h"
+#include "LibraUtils.h"
+#include <unordered_map>
+#include <string>
+#include <vector>
 
-
-LibBook::LibBook(const std::string &title, const std::string &author, int year)
+void LibBook::ByGenre(const std::string& genre) const
 {
+    auto it = genreIndex.find(genre); // Find the genre in the index
+
+    if (it != genreIndex.end()) // If the genre exists in the index
+    {
+        std::cout << "Books in genre " << genre << ":" << std::endl;
+        for (const Book* book : it->second) // Iterate through the books in that genre
+        {
+            std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Borrowed: " << (book->borrowed ? "Yes" : "No") << "\n -------- " << std::endl; 
+        }
+    }
+
+    else // If the genre does not exist in the index
+    {
+        std::cout << "No books found in genre " << genre << "." <<  std::endl; 
+    }
 }
 
-void LibBook::setTitle(const std::string &title)
+void LibBook::ByTitle(const std::string& title) const
 {
+    auto it = titleIndex.find(title); // Find matching books by title
+
+    if (it != titleIndex.end()) // If the title exists in the index
+    {
+        for (const Book* book: it->second) // Loop through the matching books
+        {
+            std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed: " << (book->borrowed ? "Yes" : "No") << "\n -------- " << std::endl; 
+        }
+    }
+
+    else // If the title does not exist in the index
+    {
+        std::cout << "No books found with title " << title << "." << std::endl; 
+    }
+    return;
 }
 
-void LibBook::setAuthor(const std::string &author)
+void LibBook::ByAuthor(const std::string& author) const
 {
+    auto it = authorIndex.find(author); // Find matching books by author
+
+    if (it != authorIndex.end()) // If the author exists in the index
+    {
+        for (const Book* book: it->second) // Loop through the matching books
+        {
+            std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << "\n Borrowed: " << (book->borrowed ? "Yes" : "No") << "\n -------- " << std::endl; 
+        }
+    }
+
+    else // If the author does not exist in the index
+    {
+        std::cout << "No books found by author " << author << "." << std::endl; 
+    }
+    return;
 }
 
-int LibBook::getYear() const
-{   
+void LibBook::displayCollection() const
+{
+    if (LibraPlus.empty()) // If the collection is empty
+    {
+        std::cout << "No books in the collection." << std::endl; 
+        return; 
+    }
+
+    std::cout << "Books in the collection:" << std::endl;
+    for(const Book& book : LibraPlus) // Iterate through the collection vector
+    {
+        std::cout << "Title: " <<  book.title << "\n" <<"Author: " << book.author << 
+        "\n" << "Genre: " << book.genre << "\n" << "Borrowed: " << (book.borrowed ? "Yes" : "No") << std::endl; 
+    }
+    return;
 }
 
-void LibBook::setYear(int year)
+std::vector<LibBook::Book>& LibBook::getBooks()
 {
+    return LibraPlus; // Return the collection of books
 }
 
-void LibBook::displayBookInfo() const
+void LibBook::createbook() // Creates a new book as defined by user
 {
+    Book newBook; // Create a new Book object
+    newBook.borrowed = false; // Set borrowed status to false
+    newBook.borrowedby = ""; // Set borrowed by to empty string
+
+    std::cin.ignore(); // Ignore any leftover newline characters in the input buffer
+
+    std::cout << "Enter the title of the book: ";
+    std::getline(std::cin, newBook.title); // Get title from user
+
+    std::cout << "Enter the author of the book: ";
+    std::getline(std::cin, newBook.author); // Get author from user
+
+    std::cout << "Enter the genre of the book: ";
+    std::getline(std::cin, newBook.genre); // Get genre from user
+
+    addBook(newBook); // Add the book to the collection
+    std::cout << "Book added successfully." << std::endl; // Display success message
+    rebuildIndex(); // Rebuild the index for the collection
+}
+
+void LibBook::addBook(const Book& book) // Adds book into the collection vector
+{
+    LibraPlus.push_back(book); // Add book to the collection vector
+}
+
+bool LibBook::BorrowBook(const std::string& title, const std::string& username)
+{
+    auto it = titleIndex.find(title); // Find the book by title
+
+    if (it == titleIndex.end()) // If the book does not exist at all
+    {
+        std::cout << "\nNo book found with title \"" << title << "\"." <<  std::endl; // Display message
+        return false; // Return failure
+    }
+        for (Book* book : it->second) // Loop through the matching books
+        {
+            if (!book->borrowed) // If the book is not borrowed
+            {
+                book->borrowed = true; // Mark the book as borrowed
+                book->borrowedby = username; // Set the user who borrowed the book
+                std::cout << "\nBook borrowed successfully." << std::endl; 
+                return true; // Return success
+            }
+        }
+
+    std::cout << "Book is already borrowed." << std::endl; 
+    return false; // Return failure
+}
+
+bool LibBook::ReturnBook(const std::string& title, const std::string& username)
+{
+    auto it = titleIndex.find(title); // Find the book by title
+
+    if (it == titleIndex.end()) // If the book does not exists
+    {
+        std::cout << "\nNo book found with title \"" << title << "\"." <<  std::endl; // Display message
+        return false; // Return failure
+    }
+        for (Book* book : it->second) // Loop through the matching books
+        {
+            if (book->borrowed && book->borrowedby == username) // If the book is borrowed by the user
+            {
+                book->borrowed = false; // Mark the book as returned
+                book->borrowedby = ""; // Clear the user who borrowed the book
+                std::cout << "Book returned successfully." << std::endl; 
+                return true; // Return success
+            }
+        }
+        
+    std::cout << "Book return failed. Book may not be borrowed by you." << std::endl;
+    return false; // Return failure
+}
+
+void LibBook::BorrowedBooks() const
+{
+    std::cout << "\nBorrowed books:" << std::endl; // Display borrowed books
+    bool found = false; // Flag to check if any borrowed books exist
+
+    for (const auto& pair : titleIndex)
+    {
+        for (const Book* book : pair.second) // Loop through the books in the index
+        {
+            
+            if (book == nullptr) // Skip null pointers
+            {
+                std::cerr << "Null pointer found in index." << std::endl; // Debug message
+                continue; // Skip this iteration
+            }
+
+            if (book && book->borrowed) // If the book is borrowed
+            {
+                std::cout << "Title: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n Borrowed by: " << book->borrowedby << "\n -------- " << std::endl; 
+                found = true; // Set flag to true
+            }
+        }
+    }
+
+    if (!found) // If no borrowed books exist
+    {
+        std::cout << "No borrowed books." << std::endl; // Display message
+    }
+
+}
+
+void LibBook::BorrowedBooksByUser(const std::string& username) const
+{
+    std::cout << "\nBorrowed books by " << username << std::endl; // Display borrowed books
+    bool found = false; // Flag to check if any borrowed books exist
+
+    for (const auto& pair : titleIndex)
+    {
+        for (const Book* book : pair.second) // Loop through the books in the index
+        {
+            if (book->borrowedby == username) // If the book is borrowed
+            {
+                std::cout << "\nTitle: " << book->title << "\n Author: " << book->author << "\n Genre: " << book->genre << "\n -------- " << std::endl; 
+                found = true; // Set flag to true
+            }
+        }
+    }
+    
+    if (!found) // If no borrowed books exist
+    {
+        std::cout << "No borrowed books." << std::endl; // Display message
+    }
+}
+
+void LibBook::rebuildIndex() // Rebuilds the index for the collection
+{
+    titleIndex.clear(); // Clear the title index
+    authorIndex.clear(); // Clear the author index
+    genreIndex.clear(); // Clear the genre index
+
+    for (Book& book : LibraPlus) // Loop through the collection
+    {
+        Book* ptr = &book; // Get pointer to the book
+        titleIndex[book.title].push_back(ptr); // Index book by title
+        authorIndex[book.author].push_back(ptr); // Index book by author
+        genreIndex[book.genre].push_back(ptr); // Index book by genre
+    }
 }

@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build LibraPlus",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/Zi",
+                "/EHsc",
+                "/nologo",
+                "/I", "include",
+                "src\\main.cpp",
+                "src\\LibraFile.cpp",
+                "src\\LibraBook.cpp",
+                "src\\LibraUsers.cpp",
+                "src\\LibraUtils.cpp",
+                "/Fe:LibraPlus.exe"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Full project build for LibraPlus"
+        }
+    ]
+}

@@ -13,7 +13,7 @@ LibraPlus is a console-based C++ application designed to handle book inventory, 
 1. Clone the repository:
     ```bash git clone <https://github.com/Zeresimo/LibraPlus.git>```
 2. Open the project in Visual Studio Code
-3. Compile and run using a C++ compileer
+3. Compile and run using a C++ compiler
 
 ## Usage
 - Run the program in the terminal
